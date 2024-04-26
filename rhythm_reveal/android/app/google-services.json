@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "1008180353302",
+    "firebase_url": "https://rhythmreveal-252-default-rtdb.firebaseio.com",
+    "project_id": "rhythmreveal-252",
+    "storage_bucket": "rhythmreveal-252.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008180353302:android:a155603712d2fdf3eb1837",
+        "android_client_info": {
+          "package_name": "com.example.rhythm_reveal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5M47El0ucYjgZjKDpkJABxJ-8xMu8N_M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008180353302:android:69977cda8ad7794feb1837",
+        "android_client_info": {
+          "package_name": "iste252.rhythmreveal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5M47El0ucYjgZjKDpkJABxJ-8xMu8N_M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
