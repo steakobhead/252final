@@ -6,8 +6,25 @@ void main() {
   runApp(const MainApp());
 }
 
+Map<int, Color> color =
+{
+50:Color.fromRGBO(136,14,79, .1),
+100:Color.fromRGBO(136,14,79, .2),
+200:Color.fromRGBO(136,14,79, .3),
+300:Color.fromRGBO(136,14,79, .4),
+400:Color.fromRGBO(136,14,79, .5),
+500:Color.fromRGBO(136,14,79, .6),
+600:Color.fromRGBO(136,14,79, .7),
+700:Color.fromRGBO(136,14,79, .8),
+800:Color.fromRGBO(136,14,79, .9),
+900:Color.fromRGBO(136,14,79, 1),
+};
+MaterialColor colorCustom = MaterialColor(0xFF880E4F, color);
+
+
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
+  
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +35,7 @@ class MainApp extends StatelessWidget {
       title: 'Rhythm Reveal',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.deepPurple,
+          primarySwatch: colorCustom,
           backgroundColor: Colors.deepPurple,
           accentColor: Colors.purpleAccent,
         ),
@@ -33,13 +50,13 @@ class MainApp extends StatelessWidget {
           bodySmall: GoogleFonts.yantramanav(fontSize: 14), // Alternative body text
         ),
       ),
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -49,8 +66,8 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    HomePageContent(),
-    ProfilePage(),
+    const HomePageContent(),
+    const ProfilePage(),
     //SettingsPage(),
     //BumpHistoryPage(),
   ];
@@ -58,9 +75,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Rhythm Reveal'),
-      ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -88,11 +102,11 @@ class _HomePageState extends State<HomePage> {
 }
 
 class HomePageContent extends StatelessWidget {
-  const HomePageContent({Key? key}) : super(key: key);
+  const HomePageContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text('Home Page Content'),
     );
   }
