@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; // Importing google fonts package
 import 'package:rhythm_reveal/page_profile.dart';
+import 'package:rhythm_reveal/page_settings.dart';
 
 void main() {
   runApp(const MainApp());
@@ -68,7 +69,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const HomePageContent(),
     const ProfilePage(),
-    //SettingsPage(),
+    const SettingsPage(),
     //BumpHistoryPage(),
   ];
 

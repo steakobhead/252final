@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:rhythm_reveal/page_history.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -84,6 +85,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         InkWell(
                           onTap: () {
                             // Handle click on "View Full History"
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => FullHistoryPage()),
+                              );
                           },
                           child: Row(children: <Widget>[
                             Text(
