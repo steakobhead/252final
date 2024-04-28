@@ -11,8 +11,6 @@ dependencies:
     sdk: flutter
 
   google_fonts: ^6.2.1
-  firebase_core: 2.30.1 
-  cloud_firestore: ^4.0.0
 
 dev_dependencies:
   flutter_test:
@@ -24,3 +22,4 @@ flutter:
   assets:
     - assets/profile_placeholder.png
     - assets/posts.json
+    - assets/users.json

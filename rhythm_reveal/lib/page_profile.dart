@@ -1,20 +1,93 @@
-//page_profile.dart
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:rhythm_reveal/page_history.dart';
 
+// Model Classes
+class UserProfile {
+  final String email;
+  final String username;
+  final String password;
+  final List<Song> topThree;
+  final List<String> fullHistory;
+
+  UserProfile({required this.email, required this.username, required this.password, required this.topThree, required this.fullHistory});
+
+  factory UserProfile.fromJson(Map<String, dynamic> json) {
+    var topThreeFromJson = json['topThree'] as List;
+    List<Song> topThreeList = topThreeFromJson.map((i) => Song.fromJson(i.values.first)).toList();
+
+    return UserProfile(
+      email: json['email'],
+      username: json['username'],
+      password: json['password'],
+      topThree: topThreeList,
+      fullHistory: List<String>.from(json['fullHistory']),
+    );
+  }
+}
+
+class Song {
+  final String title;
+  final String artist;
+  final String genre;
+  final int year;
+  final String album;
+
+  Song({required this.title, required this.artist, required this.genre, required this.year, required this.album});
+
+  factory Song.fromJson(Map<String, dynamic> json) {
+    return Song(
+      title: json['title'],
+      artist: json['artist'],
+      genre: json['genre'],
+      year: json['year'],
+      album: json['album'],
+    );
+  }
+}
+
+// Profile Page Widget
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({Key? key}) : super(key: key);
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  late Future<UserProfile> userProfile;
+
+  @override
+  void initState() {
+    super.initState();
+    userProfile = loadUserData();
+  }
+
+  Future<UserProfile> loadUserData() async {
+    final String response = await rootBundle.loadString('assets/users.json');
+    final data = json.decode(response) as List;
+    return UserProfile.fromJson(data.first);
+  }
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<UserProfile>(
+      future: userProfile,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasData) {
+            return buildUserProfilePage(snapshot.data!);
+          } else if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          }
+        }
+        return CircularProgressIndicator();
+      },
+    );
+  }
+
+  Widget buildUserProfilePage(UserProfile profile) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -29,7 +102,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Username',
+                        profile.username,
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -38,7 +111,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       SizedBox(height: 8),
                       CircleAvatar(
                         radius: 50,
-                        // Placeholder image for profile picture
                         backgroundImage: AssetImage('assets/profile_placeholder.png'),
                       ),
                       SizedBox(height: 16),
@@ -54,9 +126,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     ],
                   ),
                 ),
-                SizedBox(width: 16), // Add some spacing between sections
+                SizedBox(width: 16),
                 Expanded(
-                  child: FavoriteSongsSection(),
+                  child: FavoriteSongsSection(favoriteSongs: profile.topThree),
                 ),
               ],
             ),
@@ -84,11 +156,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         InkWell(
                           onTap: () {
-                            // Handle click on "View Full History"
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => FullHistoryPage()),
-                              );
+                              MaterialPageRoute(builder: (context) => FullHistoryPage(fullHistory: profile.fullHistory)),
+                            );
                           },
                           child: Row(children: <Widget>[
                             Text(
@@ -105,7 +176,21 @@ class _ProfilePageState extends State<ProfilePage> {
                       ],
                     ),
                     SizedBox(height: 8),
-                    // Add bump history content here
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: profile.fullHistory.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(
+                              profile.fullHistory[index],
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -117,8 +202,11 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
+// Favorite Songs Section
 class FavoriteSongsSection extends StatelessWidget {
-  const FavoriteSongsSection({super.key});
+  final List<Song> favoriteSongs;
+
+  const FavoriteSongsSection({Key? key, required this.favoriteSongs}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -132,34 +220,24 @@ class FavoriteSongsSection extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 8,),
-        //add input stuff here for favorite songs
-        TextFormField(
-          decoration: const InputDecoration(
-            labelText: 'Song 1',
+        const SizedBox(height: 8),
+        ...favoriteSongs.map((song) => Text('${song.title} by ${song.artist}',
+          style: TextStyle(
+            fontSize: 14,
           ),
-        ),
-        TextFormField(
-          decoration: const InputDecoration(
-            labelText: 'Song 2',
-          ),
-        ),
-        TextFormField(
-          decoration: const InputDecoration(
-            labelText: 'Song 3',
-          ),
-        ),
+        )).toList(),
       ],
     );
   }
 }
 
+// Yesterday's Bump Section
 class YesterdayBumpSection extends StatelessWidget {
-  const YesterdayBumpSection({super.key});
+  const YesterdayBumpSection({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    //REPLACE WITH ACTUAL CONTENT AFTER
+    // Placeholder content for "Yesterday's Bump"
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(12),

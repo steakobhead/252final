@@ -1,27 +1,42 @@
 [
-    {
-      "songName": "Song 1",
-      "artist": "Artist 1",
-      "comments": [
-        "Comment 1",
-        "Comment 2",
-        "Comment 3"
-      ]
-    },
-    {
-      "songName": "Song 2",
-      "artist": "Artist 2",
-      "comments": [
-        "Comment 1",
-        "Comment 2"
-      ]
-    },
-    {
-      "songName": "Song 3",
-      "artist": "Artist 3",
-      "comments": [
-        "Comment 1"
-      ]
-    }
-  ]
-  
+  {
+    "songName": "Sing About Me, I'm Dying Of Thirst",
+    "artist": "Kendrick Lamar",
+    "comments": [
+      "This song is a masterpiece",
+      "Kendrick's storytelling is incredible",
+      "One of my favorite hip-hop tracks ever"
+    ],
+    "linkedUser": "jrs7012"
+  },
+  {
+    "songName": "White Ferrari",
+    "artist": "Frank Ocean",
+    "comments": [
+      "Beautiful and melancholic",
+      "A perfect summer song",
+      "Love the use of nostalgia"
+    ],
+    "linkedUser": "jrs7012" 
+  },
+  {
+    "songName": "Cranes in the Sky",
+    "artist": "Solange",
+    "comments": [
+      "Solange's vocals are stunning",
+      "A powerful and emotional song",
+      "One of the best albums of 2016"
+    ],
+    "linkedUser": "kch9823@example.com"  
+  },
+  {
+    "songName": "Dummy Boy",
+    "artist": "Baauer",
+    "comments": [
+      "This song is a banger",
+      "Gets me pumped up every time",
+      "A classic of the trap genre"
+    ],
+    "linkedUser": "djh1234@somedomain.com"  
+  }
+]
