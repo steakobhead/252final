@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; // Importing google fonts package
 import 'package:rhythm_reveal/page_profile.dart';
 import 'package:rhythm_reveal/page_settings.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 
 void main() {
   runApp(const MainApp());
@@ -63,6 +65,31 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
+class Post {
+  final String songName;
+  final String artist;
+  final List<String> comments;
+
+  Post({
+    required this.songName,
+    required this.artist,
+    required this.comments,
+  });
+
+  factory Post.fromJson(Map<String, dynamic> json) {
+    return Post(
+      songName: json['songName'],
+      artist: json['artist'],
+      comments: List<String>.from(json['comments']),
+    );
+  }
+}
+
+List<Post> loadPostsFromJson(String jsonString) {
+  final parsed = jsonDecode(jsonString).cast<Map<String, dynamic>>();
+  return parsed.map<Post>((json) => Post.fromJson(json)).toList();
+}
+
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
@@ -102,13 +129,56 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class HomePageContent extends StatelessWidget {
+class HomePageContent extends StatefulWidget {
   const HomePageContent({super.key});
 
   @override
+  _HomePageContentState createState() => _HomePageContentState();
+}
+
+class _HomePageContentState extends State<HomePageContent> 
+{
+  late List<Post> _posts = new List.empty();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPosts();
+  }
+
+  Future<void> _loadPosts() async {
+    try {
+      final String postJson = await rootBundle.loadString('assets/posts.json');
+      setState(() {
+        _posts = loadPostsFromJson(postJson);
+      });
+    } catch (e) {
+      print('failed to load posts: $e');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Home Page Content'),
-    );
+    return _posts != null
+      ? ListView.builder(
+          itemCount: _posts.length,
+          itemBuilder: (context, index) {
+            final post = _posts[index];
+            return Card(
+              margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              child: ListTile(
+              title: Text(post.songName),
+              subtitle: Text(post.artist),
+              trailing: const Icon(Icons.comment),
+              onTap: () {
+                //open comments
+              },
+            )
+            );
+          },
+      )
+    : Center(
+        child: CircularProgressIndicator(),
+      );
   }
 }
