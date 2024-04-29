@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage();
 
   @override
   _HomePageState createState() => _HomePageState();

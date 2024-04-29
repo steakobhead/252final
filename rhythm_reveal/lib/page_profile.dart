@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:rhythm_reveal/page_history.dart';
+import 'package:rhythm_reveal/globals.dart' as globals;
 
 // Model Classes
 class UserProfile {
@@ -47,7 +48,6 @@ class Song {
   }
 }
 
-// Profile Page Widget
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -55,6 +55,7 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState();
 }
 
+// Profile Page Widget
 class _ProfilePageState extends State<ProfilePage> {
   late Future<UserProfile> userProfile;
 
@@ -65,10 +66,16 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<UserProfile> loadUserData() async {
-    final String response = await rootBundle.loadString('assets/users.json');
-    final data = json.decode(response) as List;
-    return UserProfile.fromJson(data.first);
-  }
+  final String response = await rootBundle.loadString('assets/users.json');
+  final List<dynamic> data = json.decode(response);
+  final Map<String, dynamic> userJson = data.firstWhere(
+    (user) => user is Map<String, dynamic> && user['email'] == globals.currentUser,
+    orElse: () => throw Exception('User not found with email ${globals.currentUser}')
+  ) as Map<String, dynamic>;
+
+  return UserProfile.fromJson(userJson);
+}
+
 
   @override
   Widget build(BuildContext context) {
