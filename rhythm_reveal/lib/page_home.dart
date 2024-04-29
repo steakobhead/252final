@@ -16,11 +16,13 @@ class Post {
   final String songName;
   final String artist;
   final List<String> comments;
+  bool isExpanded;
 
   Post({
     required this.songName,
     required this.artist,
     required this.comments,
+    this.isExpanded = false,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -84,7 +86,7 @@ class HomePageContent extends StatefulWidget {
 
 class _HomePageContentState extends State<HomePageContent> 
 {
-  late List<Post> _posts = new List.empty();
+  late List<Post> _posts = List.empty();
 
   @override
   void initState() {
@@ -104,29 +106,39 @@ class _HomePageContentState extends State<HomePageContent>
   }
 
   @override
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
   return Column(
     children: [
       const NowPlayingWidget(),
       Expanded(
         child: _posts != null
-            ? ListView.builder(
-                itemCount: _posts.length,
-                itemBuilder: (context, index) {
-                  final post = _posts[index];
-                  return Card(
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
-                    child: ListTile(
-                      title: Text(post.songName),
-                      subtitle: Text(post.artist),
-                      trailing: const Icon(Icons.comment),
-                      onTap: () {
-                        //open comments
+            ? SingleChildScrollView(
+                child: ExpansionPanelList(
+                  expansionCallback: (int index, bool isExpanded) {
+                    setState(() {
+                      _posts = List<Post>.from(_posts);
+                      _posts[index].isExpanded = !isExpanded;
+                    });
+                  },
+                  children: _posts.map<ExpansionPanel>((post) {
+                    return ExpansionPanel(
+                      headerBuilder: (BuildContext context, bool isExpanded) {
+                        return ListTile(
+                          title: Text(post.songName),
+                          subtitle: Text(post.artist),
+                        );
                       },
-                    ),
-                  );
-                },
+                      body: Column(
+                        children: post.comments.map((comment) {
+                          return ListTile(
+                            title: Text(comment),
+                          );
+                        }).toList(),
+                      ),
+                      isExpanded: post.isExpanded,
+                    );
+                  }).toList(),
+                ),
               )
             : const Center(
                 child: CircularProgressIndicator(),
@@ -134,5 +146,6 @@ class _HomePageContentState extends State<HomePageContent>
       ),
     ],
   );
-  }
+}
+
 }

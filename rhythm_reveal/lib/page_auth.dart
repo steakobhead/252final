@@ -4,7 +4,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:rhythm_reveal/page_home.dart';
 
 class AuthPage extends StatefulWidget {
-  const AuthPage({Key? key}) : super(key: key);
+  const AuthPage({super.key});
 
   @override
   _AuthPageState createState() => _AuthPageState();
@@ -41,7 +41,7 @@ class _AuthPageState extends State<AuthPage> {
       if (existingUser != null) {
         print('Login Successful');
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(builder: (context) => const HomePage()),
         );
       } else {
         print('User not found or password incorrect');
@@ -49,11 +49,11 @@ class _AuthPageState extends State<AuthPage> {
         showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: Text('Login Failed'),
-            content: Text('No user found with that email and password. Please try again.'),
+            title: const Text('Login Failed'),
+            content: const Text('No user found with that email and password. Please try again.'),
             actions: <Widget>[
               TextButton(
-                child: Text('OK'),
+                child: const Text('OK'),
                 onPressed: () => Navigator.of(ctx).pop(),
               ),
             ],
@@ -67,7 +67,7 @@ class _AuthPageState extends State<AuthPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign In'),
+        title: const Text('Sign In'),
       ),
       body: Form(
         key: _formKey,
@@ -76,18 +76,18 @@ class _AuthPageState extends State<AuthPage> {
           child: Column(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(labelText: 'Email'),
                 onSaved: (value) => email = value!,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
                 onSaved: (value) => password = value!,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: authenticate,
-                child: Text('Sign In'),
+                child: const Text('Sign In'),
               ),
             ],
           ),
