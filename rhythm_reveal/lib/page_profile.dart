@@ -2,31 +2,37 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:rhythm_reveal/page_history.dart';
+import 'package:rhythm_reveal/song_history.dart';
 import 'package:rhythm_reveal/globals.dart' as globals;
 
 // Model Classes
+
 class UserProfile {
   final String email;
   final String username;
   final String password;
   final List<Song> topThree;
-  final List<String> fullHistory;
+  final List<SongHistory> fullHistory;
 
   UserProfile({required this.email, required this.username, required this.password, required this.topThree, required this.fullHistory});
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     var topThreeFromJson = json['topThree'] as List;
     List<Song> topThreeList = topThreeFromJson.map((i) => Song.fromJson(i.values.first)).toList();
+    List<SongHistory> fullHistoryList = (json['fullHistory'] as List)
+        .map((item) => SongHistory.fromJson(item))
+        .toList();
 
     return UserProfile(
       email: json['email'],
       username: json['username'],
       password: json['password'],
       topThree: topThreeList,
-      fullHistory: List<String>.from(json['fullHistory']),
+      fullHistory: fullHistoryList,
     );
   }
 }
+
 
 class Song {
   final String title;
@@ -35,7 +41,12 @@ class Song {
   final int year;
   final String album;
 
-  Song({required this.title, required this.artist, required this.genre, required this.year, required this.album});
+  Song(
+      {required this.title,
+      required this.artist,
+      required this.genre,
+      required this.year,
+      required this.album});
 
   factory Song.fromJson(Map<String, dynamic> json) {
     return Song(
@@ -66,16 +77,18 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<UserProfile> loadUserData() async {
-  final String response = await rootBundle.loadString('assets/users.json');
-  final List<dynamic> data = json.decode(response);
-  final Map<String, dynamic> userJson = data.firstWhere(
-    (user) => user is Map<String, dynamic> && user['email'] == globals.currentUser,
-    orElse: () => throw Exception('User not found with email ${globals.currentUser}')
-  ) as Map<String, dynamic>;
+    final String response = await rootBundle.loadString('assets/users.json');
+    final List<dynamic> data = json.decode(response);
+    final Map<String, dynamic> userJson = data.firstWhere(
+            (user) =>
+                user is Map<String, dynamic> &&
+                user['email'] == globals.currentUser,
+            orElse: () => throw Exception(
+                'User not found with email ${globals.currentUser}'))
+        as Map<String, dynamic>;
 
-  return UserProfile.fromJson(userJson);
-}
-
+    return UserProfile.fromJson(userJson);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +131,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       const SizedBox(height: 8),
                       const CircleAvatar(
                         radius: 50,
-                        backgroundImage: AssetImage('assets/profile_placeholder.png'),
+                        backgroundImage:
+                            AssetImage('assets/profile_placeholder.png'),
                       ),
                       const SizedBox(height: 16),
                       const Text(
@@ -165,19 +179,22 @@ class _ProfilePageState extends State<ProfilePage> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => FullHistoryPage(fullHistory: profile.fullHistory)),
+                              MaterialPageRoute(
+                                  builder: (context) => FullHistoryPage(
+                                      fullHistory: profile.fullHistory)),
                             );
                           },
-                          child: const Row(children: <Widget>[
-                            Text(
-                            "View Full History",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Color(0xFF993B74),
+                          child: const Row(
+                            children: <Widget>[
+                              Text(
+                                "View Full History",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color(0xFF993B74),
+                                ),
                               ),
-                            ),
-                            Icon(Icons.history, color: Color(0xFF993B74)),
-                          ],
+                              Icon(Icons.history, color: Color(0xFF993B74)),
+                            ],
                           ),
                         ),
                       ],
@@ -187,9 +204,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: ListView.builder(
                         itemCount: profile.fullHistory.length,
                         itemBuilder: (context, index) {
+                          SongHistory song = profile.fullHistory[index];
                           return ListTile(
                             title: Text(
-                              profile.fullHistory[index],
+                              '${song.songName} by ${song.artist}',
                               style: const TextStyle(
                                 color: Colors.white,
                               ),
@@ -197,7 +215,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           );
                         },
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -228,51 +246,56 @@ class FavoriteSongsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        ...favoriteSongs.map((song) => Text('${song.title} by ${song.artist}',
-          style: const TextStyle(
-            fontSize: 14,
-          ),
-        )),
+        ...favoriteSongs.map((song) => Text(
+              '${song.title} by ${song.artist}',
+              style: const TextStyle(
+                fontSize: 14,
+              ),
+            )),
       ],
     );
   }
 }
 
-// Yesterday's Bump Section
 class YesterdayBumpSection extends StatelessWidget {
-    final List<String> fullHistory;
-  const YesterdayBumpSection({super.key, required this.fullHistory});
+  final List<SongHistory> fullHistory;
+
+  const YesterdayBumpSection({Key? key, required this.fullHistory}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Placeholder content for "Yesterday's Bump"
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-           Text(
-            fullHistory.first,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+    // Assuming the most recent song is considered as "Yesterday's Bump"
+    // Check if there is at least one song in the history
+    if (fullHistory.isNotEmpty) {
+      SongHistory lastSong = fullHistory.first; // You can change the logic to pick the song
+      return Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              lastSong.songName, // Song title
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Artist Name',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
+            Text(
+              lastSong.artist, // Artist name
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    } else {
+      return Container(); // Or any placeholder if no history is available
+    }
   }
 }

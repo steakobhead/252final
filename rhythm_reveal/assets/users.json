@@ -1,131 +1,194 @@
 [
   {
-    "email": "caa1234@g.rit.edu",
-    "username": "caa1234",
-    "password": "caa1234",
-    "topThree": [
-      {
-        "songOne": {
-          "title": "Cranes in the Sky",
-          "artist": "Solange",
-          "genre": "R&B, Neo-Soul",
-          "year": 2016,
-          "album": "A Seat at the Table"
-        }
-      },
-      {
-        "songTwo": {
-          "title": "Swimming Pools (Drank)",
-          "artist": "Kendrick Lamar",
-          "genre": "Rap, Hip-Hop",
-          "year": 2015,
-          "album": "To Pimp a Butterfly"
-        }
-      },
-      {
-        "songThree": {
-          "title": "Kids See Ghosts",
-          "artist": "Kids See Ghosts (Kanye West & Kid Cudi)",
-          "genre": "Hip-Hop, Psychedelic Rock",
-          "year": 2018,
-          "album": "Kids See Ghosts"
-        }
-      }
-    ],
-    "fullHistory": [
-      "Cranes in the Sky",
-      "Formation",
-      "Apeshit",
-      "Swimming Pools (Drank)",
-      "Alright",
-      "Kids See Ghosts",
-      "Mr. Rager"
-    ]
+      "email": "caa1234@g.rit.edu",
+      "username": "caa1234",
+      "password": "caa1234",
+      "topThree": [
+          {
+              "songOne": {
+                  "title": "Cranes in the Sky",
+                  "artist": "Solange",
+                  "genre": "R&B, Neo-Soul",
+                  "year": 2016,
+                  "album": "A Seat at the Table"
+              }
+          },
+          {
+              "songTwo": {
+                  "title": "Swimming Pools (Drank)",
+                  "artist": "Kendrick Lamar",
+                  "genre": "Rap, Hip-Hop",
+                  "year": 2015,
+                  "album": "To Pimp a Butterfly"
+              }
+          },
+          {
+              "songThree": {
+                  "title": "Kids See Ghosts",
+                  "artist": "Kids See Ghosts (Kanye West & Kid Cudi)",
+                  "genre": "Hip-Hop, Psychedelic Rock",
+                  "year": 2018,
+                  "album": "Kids See Ghosts"
+              }
+          }
+      ],
+      "fullHistory": [
+          {
+              "songName": "Sing About Me, I'm Dying Of Thirst",
+              "artist": "Kendrick Lamar"
+          },
+          {
+              "songName": "DNA.",
+              "artist": "Kendrick Lamar"
+          },
+          {
+              "songName": "Swimming Pools (Drank)",
+              "artist": "Kendrick Lamar"
+          },
+          {
+              "songName": "Alright",
+              "artist": "Kendrick Lamar"
+          },
+          {
+              "songName": "m.A.A.d City",
+              "artist": "Kendrick Lamar"
+          },
+          {
+              "songName": "Apeshit",
+              "artist": "The Carters"
+          },
+          {
+              "songName": "Pursuit of Happiness",
+              "artist": "Kid Cudi"
+          }
+      ]
   },
   {
-    "email": "jrs7012@g.rit.edu",
-    "username": "jrs7012",
-    "password": "jrs7012",
-    "topThree": [
-      {
-        "songOne": {
-          "title": "Sing About Me, I'm Dying Of Thirst",
-          "artist": "Kendrick Lamar",
-          "genre": "Rap, Hip-Hop",
-          "year": 2012,
-          "album": "good kid, m.A.A.d city"
-        }
-      },
-      {
-        "songTwo": {
-          "title": "White Ferrari",
-          "artist": "Frank Ocean",
-          "genre": "R&B, Psychedelic Pop",
-          "year": 2016,
-          "album": "Blonde"
-        }
-      },
-      {
-        "songThree": {
-          "title": "LVL",
-          "artist": "A$AP Rocky",
-          "genre": "Hip-Hop",
-          "year": 2013,
-          "album": "Long. Live. A$AP"
-        }
-      }
-    ],
-    "fullHistory": [
-      "Sing About Me, I'm Dying Of Thirst",
-      "Runaway",
-      "I KNOW ?",
-      "White Ferrari",
-      "Blood On The Leaves",
-      "DNA",
-      "GHOST!"
-    ]
+      "email": "jrs7012@g.rit.edu",
+      "username": "jrs7012",
+      "password": "jrs7012",
+      "topThree": [
+          {
+              "songOne": {
+                  "title": "Sing About Me, I'm Dying Of Thirst",
+                  "artist": "Kendrick Lamar",
+                  "genre": "Rap, Hip-Hop",
+                  "year": 2012,
+                  "album": "good kid, m.A.A.d city"
+              }
+          },
+          {
+              "songTwo": {
+                  "title": "White Ferrari",
+                  "artist": "Frank Ocean",
+                  "genre": "R&B, Psychedelic Pop",
+                  "year": 2016,
+                  "album": "Blonde"
+              }
+          },
+          {
+              "songThree": {
+                  "title": "LVL",
+                  "artist": "A$AP Rocky",
+                  "genre": "Hip-Hop",
+                  "year": 2013,
+                  "album": "Long. Live. A$AP"
+              }
+          }
+      ],
+      "fullHistory": [
+          {
+              "songName": "Sing About Me, I'm Dying Of Thirst",
+              "artist": "Kendrick Lamar"
+          },
+          {
+              "songName": "Runaway",
+              "artist": "Kanye West"
+          },
+          {
+              "songName": "I KNOW ?",
+              "artist": "Travis Scott"
+          },
+          {
+              "songName": "White Ferrari",
+              "artist": "Frank Ocean"
+          },
+          {
+              "songName": "Blood On The Leaves",
+              "artist": "Kanye West"
+          },
+          {
+              "songName": "DNA",
+              "artist": "Kendrick Lamar"
+          },
+          {
+              "songName": "GHOST!",
+              "artist": "Kid Cudi"
+          }
+      ]
   },
   {
-    "email": "djh1234@somedomain.com",
-    "username": "djh1234",
-    "password": "djh1234",
-    "topThree": [
-      {
-        "songOne": {
-          "title": "Dummy Boy",
-          "artist": "Baauer",
-          "genre": "Electronic, Trap",
-          "year": 2018,
-          "album": "Aa"
-        }
-      },
-      {
-        "songTwo": {
-          "title": "Where Are Ü Now",
-          "artist": "Skrillex & Diplo feat. Justin Bieber",
-          "genre": "Electronic Dance Music (EDM)",
-          "year": 2015,
-          "album": "Jack Ü"
-        }
-      },
-      {
-        "songThree": {
-          "title": "Galvanise",
-          "artist": "The Chemical Brothers",
-          "genre": "Electronic Rock, Big Beat",
-          "year": 1997,
-          "album": "Dig Your Own Hole"
-        }
-      }
-    ],
-    "fullHistory": [
-      "Dummy Boy",
-      "Harlem Shake",
-      "Where Are Ü Now",
-      "Turn Down for What",
-      "Galvanise",
-      "Hey Boy, Hey Girl",
-      "Sing It Back"
-    ]
+      "email": "djh1234@somedomain.com",
+      "username": "djh1234",
+      "password": "djh1234",
+      "topThree": [
+          {
+              "songOne": {
+                  "title": "Dummy Boy",
+                  "artist": "Baauer",
+                  "genre": "Electronic, Trap",
+                  "year": 2018,
+                  "album": "Aa"
+              }
+          },
+          {
+              "songTwo": {
+                  "title": "Where Are Ü Now",
+                  "artist": "Skrillex & Diplo feat. Justin Bieber",
+                  "genre": "Electronic Dance Music (EDM)",
+                  "year": 2015,
+                  "album": "Jack Ü"
+              }
+          },
+          {
+              "songThree": {
+                  "title": "Galvanise",
+                  "artist": "The Chemical Brothers",
+                  "genre": "Electronic Rock, Big Beat",
+                  "year": 1997,
+                  "album": "Dig Your Own Hole"
+              }
+          }
+      ],
+      "fullHistory": [
+          {
+              "songName": "Runaway",
+              "artist": "Kanye West"
+          },
+          {
+              "songName": "Blood On The Leaves",
+              "artist": "Kanye West"
+          },
+          {
+              "songName": "ASTROWORLD",
+              "artist": "Travis Scott"
+          },
+          {
+              "songName": "goosebumps",
+              "artist": "Travis Scott"
+          },
+          {
+              "songName": "Starboy",
+              "artist": "The Weeknd"
+          },
+          {
+              "songName": "House of Balloons/Glass Table Girls/Thursday",
+              "artist": "The Weeknd"
+          },
+          {
+              "songName": "Take Care",
+              "artist": "Drake"
+          }
+      ]
   }
 ]
