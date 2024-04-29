@@ -45,9 +45,7 @@ class MainApp extends StatelessWidget {
           backgroundColor: Colors.deepPurple,
           accentColor: Colors.purpleAccent,
         ),
-         // Use the default Material typography from 2021
         typography: Typography.material2021(),
-        // text styles for headlines and body text
         textTheme: GoogleFonts.aBeeZeeTextTheme(textTheme).copyWith(
           displayLarge: GoogleFonts.aBeeZee(fontSize: 24, fontWeight: FontWeight.bold), // Headline 1
           displayMedium: GoogleFonts.aBeeZee(fontSize: 20, fontWeight: FontWeight.bold), // Headline 2

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:rhythm_reveal/page_home.dart';
+import 'package:rhythm_reveal/globals.dart' as globals;
+
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -40,6 +42,7 @@ class _AuthPageState extends State<AuthPage> {
 
       if (existingUser != null) {
         print('Login Successful');
+       globals.currentUser = email;
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const HomePage()),
         );
