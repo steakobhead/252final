@@ -49,7 +49,7 @@ class Song {
 
 // Profile Page Widget
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({super.key});
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -82,7 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
             return Text("Error: ${snapshot.error}");
           }
         }
-        return CircularProgressIndicator();
+        return const CircularProgressIndicator();
       },
     );
   }
@@ -103,50 +103,50 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: <Widget>[
                       Text(
                         profile.username,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 8),
-                      CircleAvatar(
+                      const SizedBox(height: 8),
+                      const CircleAvatar(
                         radius: 50,
                         backgroundImage: AssetImage('assets/profile_placeholder.png'),
                       ),
-                      SizedBox(height: 16),
-                      Text(
+                      const SizedBox(height: 16),
+                      const Text(
                         "Yesterday's Bump",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 8),
-                      YesterdayBumpSection(),
+                      const SizedBox(height: 8),
+                      const YesterdayBumpSection(),
                     ],
                   ),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Expanded(
                   child: FavoriteSongsSection(favoriteSongs: profile.topThree),
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Color(0xFF5F0F40),
+                  color: const Color(0xFF5F0F40),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           "Bump History",
                           style: TextStyle(
                             fontSize: 20,
@@ -161,7 +161,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               MaterialPageRoute(builder: (context) => FullHistoryPage(fullHistory: profile.fullHistory)),
                             );
                           },
-                          child: Row(children: <Widget>[
+                          child: const Row(children: <Widget>[
                             Text(
                             "View Full History",
                             style: TextStyle(
@@ -175,7 +175,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Expanded(
                       child: ListView.builder(
                         itemCount: profile.fullHistory.length,
@@ -183,7 +183,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           return ListTile(
                             title: Text(
                               profile.fullHistory[index],
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                               ),
                             ),
@@ -206,7 +206,7 @@ class _ProfilePageState extends State<ProfilePage> {
 class FavoriteSongsSection extends StatelessWidget {
   final List<Song> favoriteSongs;
 
-  const FavoriteSongsSection({Key? key, required this.favoriteSongs}) : super(key: key);
+  const FavoriteSongsSection({super.key, required this.favoriteSongs});
 
   @override
   Widget build(BuildContext context) {
@@ -222,10 +222,10 @@ class FavoriteSongsSection extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         ...favoriteSongs.map((song) => Text('${song.title} by ${song.artist}',
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 14,
           ),
-        )).toList(),
+        )),
       ],
     );
   }
@@ -233,7 +233,7 @@ class FavoriteSongsSection extends StatelessWidget {
 
 // Yesterday's Bump Section
 class YesterdayBumpSection extends StatelessWidget {
-  const YesterdayBumpSection({Key? key}) : super(key: key);
+  const YesterdayBumpSection({super.key});
 
   @override
   Widget build(BuildContext context) {

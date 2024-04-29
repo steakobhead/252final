@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rhythm_reveal/page_profile.dart';
 import 'package:rhythm_reveal/page_settings.dart';
+import 'package:rhythm_reveal/widget_now_playing.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -104,26 +105,34 @@ class _HomePageContentState extends State<HomePageContent>
 
   @override
   Widget build(BuildContext context) {
-    return _posts != null
-      ? ListView.builder(
-          itemCount: _posts.length,
-          itemBuilder: (context, index) {
-            final post = _posts[index];
-            return Card(
-              margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              child: ListTile(
-              title: Text(post.songName),
-              subtitle: Text(post.artist),
-              trailing: const Icon(Icons.comment),
-              onTap: () {
-                //open comments
-              },
-            )
-            );
-          },
-      )
-    : Center(
-        child: CircularProgressIndicator(),
-      );
+  return Column(
+    children: [
+      const NowPlayingWidget(),
+      Expanded(
+        child: _posts != null
+            ? ListView.builder(
+                itemCount: _posts.length,
+                itemBuilder: (context, index) {
+                  final post = _posts[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16.0),
+                    child: ListTile(
+                      title: Text(post.songName),
+                      subtitle: Text(post.artist),
+                      trailing: const Icon(Icons.comment),
+                      onTap: () {
+                        //open comments
+                      },
+                    ),
+                  );
+                },
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
+              ),
+      ),
+    ],
+  );
   }
 }
