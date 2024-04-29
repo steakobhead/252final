@@ -4,7 +4,7 @@ class FullHistoryPage extends StatelessWidget {
   final List<String> fullHistory;
 
   // Constructor to accept the full history data
-  const FullHistoryPage({Key? key, required this.fullHistory}) : super(key: key);
+  const FullHistoryPage({super.key, required this.fullHistory});
 
   @override
   Widget build(BuildContext context) {

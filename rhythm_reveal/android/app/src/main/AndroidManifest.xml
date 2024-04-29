@@ -32,9 +32,11 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <service android:name="com.gomes.nowplaying.NowPlayingListenerService"
-            android:label="NowPlayingListenerService"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+        <service
+            android:name="com.gomes.nowplaying.NowPlayingListenerService"
+            android:label="QUERY_ALL_PACKAGES"
+            android:exported = "true"
+            android:permission="android.permission.QUERY_ALL_PACKAGES">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>

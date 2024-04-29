@@ -4,6 +4,7 @@ import 'package:rhythm_reveal/page_profile.dart';
 import 'package:rhythm_reveal/page_settings.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:rhythm_reveal/widget_now_playing.dart';
 
 void main() {
   runApp(const MainApp());
@@ -11,16 +12,16 @@ void main() {
 
 Map<int, Color> color =
 {
-50:Color.fromRGBO(136,14,79, .1),
-100:Color.fromRGBO(136,14,79, .2),
-200:Color.fromRGBO(136,14,79, .3),
-300:Color.fromRGBO(136,14,79, .4),
-400:Color.fromRGBO(136,14,79, .5),
-500:Color.fromRGBO(136,14,79, .6),
-600:Color.fromRGBO(136,14,79, .7),
-700:Color.fromRGBO(136,14,79, .8),
-800:Color.fromRGBO(136,14,79, .9),
-900:Color.fromRGBO(136,14,79, 1),
+50:const Color.fromRGBO(136,14,79, .1),
+100:const Color.fromRGBO(136,14,79, .2),
+200:const Color.fromRGBO(136,14,79, .3),
+300:const Color.fromRGBO(136,14,79, .4),
+400:const Color.fromRGBO(136,14,79, .5),
+500:const Color.fromRGBO(136,14,79, .6),
+600:const Color.fromRGBO(136,14,79, .7),
+700:const Color.fromRGBO(136,14,79, .8),
+800:const Color.fromRGBO(136,14,79, .9),
+900:const Color.fromRGBO(136,14,79, 1),
 };
 MaterialColor colorCustom = MaterialColor(0xFF880E4F, color);
 
@@ -138,7 +139,7 @@ class HomePageContent extends StatefulWidget {
 
 class _HomePageContentState extends State<HomePageContent> 
 {
-  late List<Post> _posts = new List.empty();
+  late List<Post> _posts = List.empty();
 
   @override
   void initState() {
@@ -158,27 +159,35 @@ class _HomePageContentState extends State<HomePageContent>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return _posts != null
-      ? ListView.builder(
-          itemCount: _posts.length,
-          itemBuilder: (context, index) {
-            final post = _posts[index];
-            return Card(
-              margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              child: ListTile(
-              title: Text(post.songName),
-              subtitle: Text(post.artist),
-              trailing: const Icon(Icons.comment),
-              onTap: () {
-                //open comments
-              },
-            )
-            );
-          },
-      )
-    : Center(
-        child: CircularProgressIndicator(),
-      );
+Widget build(BuildContext context) {
+  return Column(
+    children: [
+      const NowPlayingWidget(),
+      Expanded(
+        child: _posts != null
+            ? ListView.builder(
+                itemCount: _posts.length,
+                itemBuilder: (context, index) {
+                  final post = _posts[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16.0),
+                    child: ListTile(
+                      title: Text(post.songName),
+                      subtitle: Text(post.artist),
+                      trailing: const Icon(Icons.comment),
+                      onTap: () {
+                        //open comments
+                      },
+                    ),
+                  );
+                },
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
+              ),
+      ),
+    ],
+  );
   }
 }

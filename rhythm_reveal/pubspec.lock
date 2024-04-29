@@ -201,7 +201,7 @@ packages:
     source: hosted
     version: "1.0.0"
   nowplaying:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: nowplaying
       sha256: b618b800bd143206d989ca2c6bb46a59a43ea3eb42b53cab4be26bf51c583eff
@@ -297,7 +297,7 @@ packages:
     source: hosted
     version: "2.1.8"
   provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: provider
       sha256: c8a055ee5ce3fd98d6fc872478b03823ffdb448699c6ebdbbc71d59b596fd48c
