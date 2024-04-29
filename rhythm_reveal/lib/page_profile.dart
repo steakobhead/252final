@@ -129,7 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const YesterdayBumpSection(),
+                      YesterdayBumpSection(fullHistory: profile.fullHistory),
                     ],
                   ),
                 ),
@@ -240,7 +240,8 @@ class FavoriteSongsSection extends StatelessWidget {
 
 // Yesterday's Bump Section
 class YesterdayBumpSection extends StatelessWidget {
-  const YesterdayBumpSection({super.key});
+    final List<String> fullHistory;
+  const YesterdayBumpSection({super.key, required this.fullHistory});
 
   @override
   Widget build(BuildContext context) {
@@ -255,9 +256,9 @@ class YesterdayBumpSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Song Title',
-            style: TextStyle(
+           Text(
+            fullHistory.first,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
