@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 
 class HomePage extends StatefulWidget {
-  const HomePage();
+  const HomePage({super.key});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -105,15 +105,17 @@ class _HomePageContentState extends State<HomePageContent>
     }
   }
 
-  @override
-Widget build(BuildContext context) {
-  return Column(
-    children: [
-      const NowPlayingWidget(),
-      Expanded(
-        child: _posts != null
-            ? SingleChildScrollView(
-                child: ExpansionPanelList(
+   @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 50,
+            child: NowPlayingWidget(),
+          ),
+          _posts.isNotEmpty
+              ? ExpansionPanelList(
                   expansionCallback: (int index, bool isExpanded) {
                     setState(() {
                       _posts = List<Post>.from(_posts);
@@ -138,14 +140,12 @@ Widget build(BuildContext context) {
                       isExpanded: post.isExpanded,
                     );
                   }).toList(),
+                )
+              : const Center(
+                  child: CircularProgressIndicator(),
                 ),
-              )
-            : const Center(
-                child: CircularProgressIndicator(),
-              ),
+        ],
       ),
-    ],
-  );
-}
-
+    );
+  }
 }

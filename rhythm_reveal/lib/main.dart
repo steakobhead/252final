@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; // Importing google fonts package
 import 'package:rhythm_reveal/page_auth.dart';
@@ -8,9 +8,16 @@ import 'package:rhythm_reveal/page_profile.dart';
 import 'package:rhythm_reveal/page_settings.dart';
 
 
-void main() {
+
+
+
+
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MainApp());
 }
+
 
 Map<int, Color> color =
 {

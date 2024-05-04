@@ -260,7 +260,7 @@ class FavoriteSongsSection extends StatelessWidget {
 class YesterdayBumpSection extends StatelessWidget {
   final List<SongHistory> fullHistory;
 
-  const YesterdayBumpSection({Key? key, required this.fullHistory}) : super(key: key);
+  const YesterdayBumpSection({super.key, required this.fullHistory});
 
   @override
   Widget build(BuildContext context) {
@@ -279,7 +279,7 @@ class YesterdayBumpSection extends StatelessWidget {
           children: [
             Text(
               lastSong.songName, // Song title
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),

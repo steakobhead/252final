@@ -3,6 +3,7 @@ import 'package:nowplaying/nowplaying.dart';
 import 'package:provider/provider.dart';
 import 'package:nowplaying/nowplaying_track.dart';
 
+
 class NowPlayingWidget extends StatefulWidget {
   const NowPlayingWidget({super.key});
 
@@ -12,6 +13,7 @@ class NowPlayingWidget extends StatefulWidget {
 
 class _NowPlayingWidgetState extends State<NowPlayingWidget> {
   NowPlaying? _nowPlaying;
+  
 
   @override
   void initState() {
@@ -20,11 +22,13 @@ class _NowPlayingWidgetState extends State<NowPlayingWidget> {
   }
 
   Future<void> _initializeNowPlaying() async {
+    
     try {
       await NowPlaying.instance.start();
     } catch (e) {
       print('Failed to initialize NowPlaying: $e');
     }
+    
   }
 
   @override
@@ -49,4 +53,3 @@ class _NowPlayingWidgetState extends State<NowPlayingWidget> {
     );
   }
 }
-
