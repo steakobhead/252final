@@ -5,7 +5,7 @@ class FullHistoryPage extends StatelessWidget {
   final List<SongHistory> fullHistory;
 
   // Constructor to accept the full history data
-  const FullHistoryPage({super.key, required this.fullHistory});
+  const FullHistoryPage({Key? key, required this.fullHistory}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +19,15 @@ class FullHistoryPage extends StatelessWidget {
           // Creating a text representation that includes both the song name and artist
           String displayText =
               "${fullHistory[index].songName} by ${fullHistory[index].artist}";
-          return ListTile(
-            title: Text(displayText),
+          return Card(
+            child: ListTile(
+              leading: Icon(Icons.music_note), // You can use any icon here
+              title: Text(fullHistory[index].songName),
+              subtitle: Text(fullHistory[index].artist),
+              onTap: () {
+                // Add onTap functionality here if needed
+              },
+            ),
           );
         },
       ),

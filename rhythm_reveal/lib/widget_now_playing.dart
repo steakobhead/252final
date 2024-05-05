@@ -12,44 +12,57 @@ class NowPlayingWidget extends StatefulWidget {
 }
 
 class _NowPlayingWidgetState extends State<NowPlayingWidget> {
-  NowPlaying? _nowPlaying;
-  
-
   @override
   void initState() {
     super.initState();
-    _initializeNowPlaying();
+    _checkPermissions();
   }
 
-  Future<void> _initializeNowPlaying() async {
-    
-    try {
-      await NowPlaying.instance.start();
-    } catch (e) {
-      print('Failed to initialize NowPlaying: $e');
+  Future<void> _checkPermissions() async {
+    final isEnabled = await NowPlaying.instance.isEnabled();
+    if (!isEnabled) {
+      final shown = await NowPlaying.instance.requestPermissions();
+      print('Permissions page shown: $shown');
     }
-    
   }
+  
 
   @override
-  Widget build(BuildContext context)
-  {
-  return StreamProvider<NowPlayingTrack>.value(
-    value: NowPlaying.instance.stream,
-    initialData: NowPlayingTrack(
-        title: 'Unknown',
-        artist: 'Unknown',
-        album: 'Unknown',
-      ),
-    child: Scaffold(
-        body: Consumer<NowPlayingTrack>(
-          builder: (context, track, _) {
-            return Container(
-              child: Text('Current Song: ${track.title}'),
-            );
-          }
-        )
-      )
-    );
+  Widget build(BuildContext context) {
+    return StreamProvider<NowPlayingTrack>.value(
+      initialData: NowPlayingTrack.loading,
+      value: NowPlaying.instance.stream,
+      child: Consumer<NowPlayingTrack>(
+        builder: (context, track, _) {
+          // if (track == NowPlayingTrack.loading) return Container();
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (track.isStopped) Text('nothing playing'),
+              if (!track.isStopped) ...[
+                if (track.title != null) Text(track.title!.trim()),
+                if (track.artist != null) Text(track.artist!.trim()),
+                if (track.album != null) Text(track.album!.trim()),
+                Text(track.state.toString()),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(8, 8, 8, 16),
+                      width: 200,
+                      height: 200,
+                      alignment: Alignment.center,
+                      color: Colors.grey,
+                      ),
+              ]),
+                    Positioned(
+                        bottom: 0, left: 8, child: Text(track.source!.trim())),
+                  ],
+                ]
+              );
+            }
+          )
+        );
+    
+      }
   }
-}

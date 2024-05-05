@@ -6,6 +6,9 @@ import 'package:rhythm_reveal/page_auth.dart';
 import 'package:rhythm_reveal/page_home.dart';
 import 'package:rhythm_reveal/page_profile.dart';
 import 'package:rhythm_reveal/page_settings.dart';
+import 'package:nowplaying/nowplaying.dart';
+import 'package:provider/provider.dart';
+import 'package:nowplaying/nowplaying_track.dart';
 
 
 
@@ -14,6 +17,11 @@ import 'package:rhythm_reveal/page_settings.dart';
 
 
 void main() async{
+  await NowPlaying.instance.start(
+    resolveImages: false,
+    spotifyClientId: 'xxxx',
+    spotifyClientSecret: 'xxxx',
+  );
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MainApp());
 }

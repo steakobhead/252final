@@ -106,46 +106,42 @@ class _HomePageContentState extends State<HomePageContent>
   }
 
    @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 50,
-            child: NowPlayingWidget(),
-          ),
-          _posts.isNotEmpty
-              ? ExpansionPanelList(
-                  expansionCallback: (int index, bool isExpanded) {
-                    setState(() {
-                      _posts = List<Post>.from(_posts);
-                      _posts[index].isExpanded = !isExpanded;
-                    });
-                  },
-                  children: _posts.map<ExpansionPanel>((post) {
-                    return ExpansionPanel(
-                      headerBuilder: (BuildContext context, bool isExpanded) {
+Widget build(BuildContext context) {
+  return SingleChildScrollView(
+    child: Column(
+      children: [
+        const NowPlayingWidget(),
+        _posts.isNotEmpty
+            ? ExpansionPanelList(
+                expansionCallback: (int index, bool isExpanded) {
+                  setState(() {
+                    _posts[index].isExpanded = !isExpanded;
+                  });
+                },
+                children: _posts.map<ExpansionPanel>((post) {
+                  return ExpansionPanel(
+                    headerBuilder: (BuildContext context, bool isExpanded) {
+                      return ListTile(
+                        title: Text(post.songName),
+                        subtitle: Text(post.artist),
+                      );
+                    },
+                    body: Column(
+                      children: post.comments.map((comment) {
                         return ListTile(
-                          title: Text(post.songName),
-                          subtitle: Text(post.artist),
+                          title: Text(comment),
                         );
-                      },
-                      body: Column(
-                        children: post.comments.map((comment) {
-                          return ListTile(
-                            title: Text(comment),
-                          );
-                        }).toList(),
-                      ),
-                      isExpanded: post.isExpanded,
-                    );
-                  }).toList(),
-                )
-              : const Center(
-                  child: CircularProgressIndicator(),
-                ),
-        ],
-      ),
-    );
-  }
+                      }).toList(),
+                    ),
+                    isExpanded: post.isExpanded,
+                  );
+                }).toList(),
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
+              ),
+      ],
+    ),
+  );
+}
 }
