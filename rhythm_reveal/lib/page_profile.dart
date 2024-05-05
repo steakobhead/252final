@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:rhythm_reveal/main.dart';
 import 'package:rhythm_reveal/page_history.dart';
 import 'package:rhythm_reveal/song_history.dart';
 import 'package:rhythm_reveal/globals.dart' as globals;
@@ -126,6 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -246,12 +248,14 @@ class FavoriteSongsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        ...favoriteSongs.map((song) => Text(
-              '${song.title} by ${song.artist}',
-              style: const TextStyle(
-                fontSize: 14,
-              ),
-            )),
+        // Display each favorite song on a small card or tile
+        ...favoriteSongs.map((song) => Card(
+          child: ListTile(
+            title: Text(song.title),
+            subtitle: Text(song.artist, style: const TextStyle(fontSize: 12, color: Color(0xFF993B74) )),
+            // You can add onTap functionality here if needed
+          ),
+        )),
       ],
     );
   }
@@ -288,7 +292,7 @@ class YesterdayBumpSection extends StatelessWidget {
               lastSong.artist, // Artist name
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey[600],
+                color: Color(0xFF993B74),
               ),
             ),
           ],
