@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Importing google fonts package
+import 'package:firebase_core/firebase_core.dart';
+import 'package:rhythm_reveal/firebase_options.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rhythm_reveal/page_auth.dart';
 import 'package:rhythm_reveal/page_home.dart';
 import 'package:rhythm_reveal/page_profile.dart';
@@ -23,6 +25,9 @@ void main() async{
     spotifyClientSecret: 'xxxx',
   );
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MainApp());
 }
 
@@ -42,14 +47,11 @@ Map<int, Color> color =
 };
 MaterialColor colorCustom = MaterialColor(0xFF880E4F, color);
 
-
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-  
+  const MainApp({Key? key});
 
   @override
   Widget build(BuildContext context) {
-
     final textTheme = Theme.of(context).textTheme;
 
     return MaterialApp(
@@ -62,11 +64,14 @@ class MainApp extends StatelessWidget {
         ),
         typography: Typography.material2021(),
         textTheme: GoogleFonts.aBeeZeeTextTheme(textTheme).copyWith(
-          displayLarge: GoogleFonts.aBeeZee(fontSize: 24, fontWeight: FontWeight.bold), // Headline 1
-          displayMedium: GoogleFonts.aBeeZee(fontSize: 20, fontWeight: FontWeight.bold), // Headline 2
-          displaySmall: GoogleFonts.aBeeZee(fontSize: 18, fontWeight: FontWeight.bold), // Headline 3
-          bodyLarge: GoogleFonts.yantramanav(fontSize: 16), // Body text
-          bodySmall: GoogleFonts.yantramanav(fontSize: 14), // Alternative body text
+          displayLarge:
+              GoogleFonts.aBeeZee(fontSize: 24, fontWeight: FontWeight.bold),
+          displayMedium:
+              GoogleFonts.aBeeZee(fontSize: 20, fontWeight: FontWeight.bold),
+          displaySmall:
+              GoogleFonts.aBeeZee(fontSize: 18, fontWeight: FontWeight.bold),
+          bodyLarge: GoogleFonts.yantramanav(fontSize: 16),
+          bodySmall: GoogleFonts.yantramanav(fontSize: 14),
         ),
       ),
       home: const AuthPage(),

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rhythm_reveal/page_profile.dart';
 import 'package:rhythm_reveal/page_settings.dart';
-import 'package:rhythm_reveal/widget_now_playing.dart';
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,32 +10,70 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class Post {
-  final String songName;
-  final String artist;
-  final List<String> comments;
-  bool isExpanded;
+class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;
+  late List<Widget> _pages;
 
-  Post({
-    required this.songName,
-    required this.artist,
-    required this.comments,
-    this.isExpanded = false,
-  });
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      _buildPostsPage(),
+      const ProfilePage(),
+      const SettingsPage(),
+    ];
+  }
 
-  factory Post.fromJson(Map<String, dynamic> json) {
-    return Post(
-      songName: json['songName'],
-      artist: json['artist'],
-      comments: List<String>.from(json['comments']),
+  Widget _buildPostsPage() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return const Text('No posts available.');
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return ListView(
+          padding: const EdgeInsets.all(8),
+          children: snapshot.data!.docs.map((DocumentSnapshot document) {
+            Map<String, dynamic> data =
+                document.data()! as Map<String, dynamic>;
+            String songName = data['songName'] ?? 'No song name';
+            String artist = data['artist'] ?? 'Unknown artist';
+            List<dynamic> comments = data['comments'] ?? ['No comments'];
+            String linkedUser = data['linkedUser'] ?? 'Anonymous';
+
+            return Card(
+              elevation: 5,
+              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(10),
+                title: Text(songName,
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Artist: $artist'),
+                    Text('Linked User: $linkedUser'),
+                    SizedBox(height: 10),
+                    Text('Comments:'),
+                    ...comments
+                        .map((comment) =>
+                            Text(comment, style: TextStyle(fontSize: 14)))
+                        .toList(),
+                  ],
+                ),
+              ),
+            );
+          }).toList(),
+        );
+      },
     );
   }
-}
-
-List<Post> loadPostsFromJson(String jsonString) {
-  final parsed = jsonDecode(jsonString).cast<Map<String, dynamic>>();
-  return parsed.map<Post>((json) => Post.fromJson(json)).toList();
-}
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
@@ -51,97 +87,32 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        onTap: (index) {
+        onTap: (int index) {
           setState(() {
             _currentIndex = index;
           });
         },
-        items: const[
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
-            ),
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
             label: 'Profile',
-            ),
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'Settings'),
-        ]
+            label: 'Settings',
+          ),
+        ],
       ),
     );
   }
-}
-
-class HomePageContent extends StatefulWidget {
-  const HomePageContent({super.key});
-
-  @override
-  _HomePageContentState createState() => _HomePageContentState();
-}
-
-class _HomePageContentState extends State<HomePageContent> 
-{
-  late List<Post> _posts = List.empty();
-
-  @override
-  void initState() {
-    super.initState();
-    _loadPosts();
-  }
-
-  Future<void> _loadPosts() async {
-    try {
-      final String postJson = await rootBundle.loadString('assets/posts.json');
-      setState(() {
-        _posts = loadPostsFromJson(postJson);
-      });
-    } catch (e) {
-      print('failed to load posts: $e');
-    }
-  }
-
-   @override
-Widget build(BuildContext context) {
-  return SingleChildScrollView(
-    child: Column(
-      children: [
-        const NowPlayingWidget(),
-        _posts.isNotEmpty
-            ? ExpansionPanelList(
-                expansionCallback: (int index, bool isExpanded) {
-                  setState(() {
-                    _posts[index].isExpanded = !isExpanded;
-                  });
-                },
-                children: _posts.map<ExpansionPanel>((post) {
-                  return ExpansionPanel(
-                    headerBuilder: (BuildContext context, bool isExpanded) {
-                      return ListTile(
-                        title: Text(post.songName),
-                        subtitle: Text(post.artist),
-                      );
-                    },
-                    body: Column(
-                      children: post.comments.map((comment) {
-                        return ListTile(
-                          title: Text(comment),
-                        );
-                      }).toList(),
-                    ),
-                    isExpanded: post.isExpanded,
-                  );
-                }).toList(),
-              )
-            : const Center(
-                child: CircularProgressIndicator(),
-              ),
-      ],
-    ),
-  );
-}
 }

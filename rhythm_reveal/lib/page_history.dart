@@ -1,11 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:rhythm_reveal/song_history.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rhythm_reveal/globals.dart' as globals;
 
-class FullHistoryPage extends StatelessWidget {
-  final List<SongHistory> fullHistory;
+class SongHistory {
+  final String songName;
+  final String artist;
+  final DateTime dateListened;
 
-  // Constructor to accept the full history data
-  const FullHistoryPage({Key? key, required this.fullHistory}) : super(key: key);
+  SongHistory({
+    required this.songName,
+    required this.artist,
+    required this.dateListened,
+  });
+
+  factory SongHistory.fromFirestore(Map<String, dynamic> data) {
+    return SongHistory(
+      songName: data['songName'] as String,
+      artist: data['artist'] as String,
+      dateListened: (data['dateListened'] as Timestamp).toDate(),
+    );
+  }
+}
+
+class FullHistoryPage extends StatefulWidget {
+  const FullHistoryPage({Key? key}) : super(key: key);
+
+  @override
+  _FullHistoryPageState createState() => _FullHistoryPageState();
+}
+
+class _FullHistoryPageState extends State<FullHistoryPage> {
+  late Future<List<SongHistory>> _fullHistoryFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _fullHistoryFuture = loadFullHistory();
+  }
+
+  Future<List<SongHistory>> loadFullHistory() async {
+    var collection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(globals.currentUser)
+        .collection('fullHistory');
+    var snapshot = await collection.get();
+
+    return snapshot.docs
+        .map((doc) =>
+            SongHistory.fromFirestore(doc.data() as Map<String, dynamic>))
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,22 +57,25 @@ class FullHistoryPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Full History'),
       ),
-      body: ListView.builder(
-        itemCount: fullHistory.length,
-        itemBuilder: (context, index) {
-          // Creating a text representation that includes both the song name and artist
-          String displayText =
-              "${fullHistory[index].songName} by ${fullHistory[index].artist}";
-          return Card(
-            child: ListTile(
-              leading: Icon(Icons.music_note), // You can use any icon here
-              title: Text(fullHistory[index].songName),
-              subtitle: Text(fullHistory[index].artist),
-              onTap: () {
-                // Add onTap functionality here if needed
-              },
-            ),
-          );
+      body: FutureBuilder<List<SongHistory>>(
+        future: _fullHistoryFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  SongHistory history = snapshot.data![index];
+                  return ListTile(
+                    title: Text('${history.songName} by ${history.artist}'),
+                  );
+                },
+              );
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+          }
+          return const CircularProgressIndicator();
         },
       ),
     );
