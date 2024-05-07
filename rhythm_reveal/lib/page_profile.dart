@@ -3,6 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rhythm_reveal/globals.dart' as globals;
 import 'package:rhythm_reveal/models.dart';
 
+import 'package:rhythm_reveal/models.dart' as models;
+import 'package:rhythm_reveal/page_history.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -48,52 +51,67 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget buildUserProfilePage(UserProfile profile) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          profile.username,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
+  return Scaffold(
+    body: SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        profile.username,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
-                        const SizedBox(height: 8),
-                        const CircleAvatar(
-                          radius: 50,
-                          backgroundImage:
-                              AssetImage('assets/profile_placeholder.png'),
-                        ),
-                        const SizedBox(height: 16),
-                        FavoriteSongsSection(favoriteSongs: profile.topThree),
-                        const SizedBox(height: 16),
-                        Container(
-                          height: 300,
-                          child: FullHistorySection(
-                              fullHistory: profile.fullHistory),
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 8),
+                      const CircleAvatar(
+                        radius: 50,
+                        backgroundImage:
+                            AssetImage('assets/profile_placeholder.png'),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
                   ),
-                ],
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: FavoriteSongsSection(favoriteSongs: profile.topThree),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Container(
+              height: 300,
+              child: FullHistorySection(
+                fullHistory: profile.fullHistory,
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FullHistoryPage()),
+                );
+              },
+              child: const Text('View Full History'),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 class FavoriteSongsSection extends StatelessWidget {
@@ -119,9 +137,11 @@ class FavoriteSongsSection extends StatelessWidget {
               style: TextStyle(fontSize: 14))
         else
           ...favoriteSongs
-              .map((song) => Text(
-                    '${song.title} by ${song.artist}',
-                    style: const TextStyle(fontSize: 14),
+              .map((song) => Card(
+                    child: ListTile(
+                      title: Text('${song.title}'),
+                      subtitle: Text('${song.artist}'),
+                    ),
                   ))
               .toList(),
       ],
@@ -130,7 +150,7 @@ class FavoriteSongsSection extends StatelessWidget {
 }
 
 class FullHistorySection extends StatelessWidget {
-  final List<SongHistory> fullHistory;
+  final List<models.SongHistory> fullHistory;
 
   const FullHistorySection({super.key, required this.fullHistory});
 

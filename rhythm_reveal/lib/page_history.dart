@@ -60,24 +60,35 @@ class _FullHistoryPageState extends State<FullHistoryPage> {
       body: FutureBuilder<List<SongHistory>>(
         future: _fullHistoryFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  SongHistory history = snapshot.data![index];
-                  return ListTile(
-                    title: Text('${history.songName} by ${history.artist}'),
-                  );
-                },
-              );
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            }
-          }
-          return const CircularProgressIndicator();
+  if (snapshot.connectionState == ConnectionState.done) {
+    if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+      return ListView.builder(
+        itemCount: snapshot.data!.length,
+        itemBuilder: (context, index) {
+          SongHistory history = snapshot.data![index];
+          return Card(
+            elevation: 4,
+            margin: EdgeInsets.all(8),
+            child: ListTile(
+              title: Text('${history.songName} by ${history.artist}'),
+            ),
+          );
         },
-      ),
+      );
+    } else {
+      return Center(
+        child: Text('No history available'),
+      );
+    }
+  } else if (snapshot.hasError) {
+    return Text('Error: ${snapshot.error}');
+  } else {
+    return Center(
+      child: CircularProgressIndicator(),
     );
+  }
+},
+
+    ));
   }
 }
