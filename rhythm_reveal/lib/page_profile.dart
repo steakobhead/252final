@@ -11,42 +11,38 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late Future<UserProfile> _userProfileFuture;
+  Stream<UserProfile>? _userProfileStream;
 
   @override
   void initState() {
     super.initState();
-    _userProfileFuture = _loadUserData();
-  }
-
-  Future<UserProfile> _loadUserData() async {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
+    _userProfileStream = FirebaseFirestore.instance
         .collection('users')
         .where('email', isEqualTo: globals.currentUser)
-        .limit(1)
-        .get();
-
-    if (snapshot.docs.isEmpty) {
-      throw Exception('User not found with email ${globals.currentUser}');
-    }
-
-    DocumentSnapshot userDoc = snapshot.docs.first;
-    return UserProfile.fromFirestore(userDoc.data()! as Map<String, dynamic>);
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.docs.isEmpty) {
+        throw Exception('User not found with email ${globals.currentUser}');
+      }
+      return UserProfile.fromFirestore(
+          snapshot.docs.first.data()! as Map<String, dynamic>);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<UserProfile>(
-      future: _userProfileFuture,
+    return StreamBuilder<UserProfile>(
+      stream: _userProfileStream,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasData) {
-            return buildUserProfilePage(snapshot.data!);
-          } else if (snapshot.hasError) {
-            return Text("Error: ${snapshot.error}");
-          }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text("Error: ${snapshot.error}");
+        } else if (snapshot.hasData) {
+          return buildUserProfilePage(snapshot.data!);
+        } else {
+          return const Text("No data available");
         }
-        return const CircularProgressIndicator();
       },
     );
   }
@@ -118,12 +114,16 @@ class FavoriteSongsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        ...favoriteSongs.map((song) => Text(
-              '${song.title} by ${song.artist}',
-              style: const TextStyle(
-                fontSize: 14,
-              ),
-            )),
+        if (favoriteSongs.isEmpty)
+          const Text("No favorite songs added yet.",
+              style: TextStyle(fontSize: 14))
+        else
+          ...favoriteSongs
+              .map((song) => Text(
+                    '${song.title} by ${song.artist}',
+                    style: const TextStyle(fontSize: 14),
+                  ))
+              .toList(),
       ],
     );
   }
