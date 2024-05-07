@@ -3,6 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:rhythm_reveal/firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rhythm_reveal/page_auth.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +34,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     final textTheme = Theme.of(context).textTheme;
 
     return MaterialApp(
