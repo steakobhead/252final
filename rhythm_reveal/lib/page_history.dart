@@ -1,26 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rhythm_reveal/globals.dart' as globals;
-
-class SongHistory {
-  final String songName;
-  final String artist;
-  final DateTime dateListened;
-
-  SongHistory({
-    required this.songName,
-    required this.artist,
-    required this.dateListened,
-  });
-
-  factory SongHistory.fromFirestore(Map<String, dynamic> data) {
-    return SongHistory(
-      songName: data['songName'] as String,
-      artist: data['artist'] as String,
-      dateListened: (data['dateListened'] as Timestamp).toDate(),
-    );
-  }
-}
+import 'package:rhythm_reveal/models.dart';
 
 class FullHistoryPage extends StatefulWidget {
   const FullHistoryPage({Key? key}) : super(key: key);
@@ -30,25 +11,23 @@ class FullHistoryPage extends StatefulWidget {
 }
 
 class _FullHistoryPageState extends State<FullHistoryPage> {
-  late Future<List<SongHistory>> _fullHistoryFuture;
+  late Stream<List<SongHistory>> _songHistoryStream;
 
   @override
   void initState() {
     super.initState();
-    _fullHistoryFuture = loadFullHistory();
-  }
-
-  Future<List<SongHistory>> loadFullHistory() async {
-    var collection = FirebaseFirestore.instance
+    _songHistoryStream = FirebaseFirestore.instance
         .collection('users')
-        .doc(globals.currentUser)
-        .collection('fullHistory');
-    var snapshot = await collection.get();
-
-    return snapshot.docs
-        .map((doc) =>
-            SongHistory.fromFirestore(doc.data() as Map<String, dynamic>))
-        .toList();
+        .where('email', isEqualTo: globals.currentUser) 
+        .snapshots()
+        .map((snapshot) {
+          if (snapshot.docs.isEmpty) {
+            throw Exception('User not found with email ${globals.currentUser}');
+          }
+          var userDoc = snapshot.docs.first;
+          var fullHistory = userDoc.data()['fullHistory'] as List<dynamic> ?? [];
+          return fullHistory.map((historyData) => SongHistory.fromFirestore(historyData as Map<String, dynamic>)).toList();
+        });
   }
 
   @override
@@ -57,38 +36,28 @@ class _FullHistoryPageState extends State<FullHistoryPage> {
       appBar: AppBar(
         title: const Text('Full History'),
       ),
-      body: FutureBuilder<List<SongHistory>>(
-        future: _fullHistoryFuture,
+      body: StreamBuilder<List<SongHistory>>(
+        stream: _songHistoryStream,
         builder: (context, snapshot) {
-  if (snapshot.connectionState == ConnectionState.done) {
-    if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-      return ListView.builder(
-        itemCount: snapshot.data!.length,
-        itemBuilder: (context, index) {
-          SongHistory history = snapshot.data![index];
-          return Card(
-            elevation: 4,
-            margin: EdgeInsets.all(8),
-            child: ListTile(
-              title: Text('${history.songName} by ${history.artist}'),
-            ),
-          );
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                var history = snapshot.data![index];
+                return ListTile(
+                  title: Text('${history.songName} by ${history.artist}'),
+                );
+              },
+            );
+          } else {
+            return const Text("No history available");
+          }
         },
-      );
-    } else {
-      return Center(
-        child: Text('No history available'),
-      );
-    }
-  } else if (snapshot.hasError) {
-    return Text('Error: ${snapshot.error}');
-  } else {
-    return Center(
-      child: CircularProgressIndicator(),
+      ),
     );
-  }
-},
-
-    ));
   }
 }
