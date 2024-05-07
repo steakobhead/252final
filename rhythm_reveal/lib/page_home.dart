@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rhythm_reveal/page_profile.dart';
 import 'package:rhythm_reveal/page_settings.dart';
+import 'package:rhythm_reveal/globals.dart' as globals;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -44,7 +45,7 @@ class _HomePageState extends State<HomePage> {
                 document.data()! as Map<String, dynamic>;
             String songName = data['songName'] ?? 'No song name';
             String artist = data['artist'] ?? 'Unknown artist';
-            List<dynamic> comments = data['comments'] ?? ['No comments'];
+            List<dynamic> comments = data['comments'] ?? [];
             String linkedUser = data['linkedUser'] ?? 'Anonymous';
 
             return Card(
@@ -65,6 +66,9 @@ class _HomePageState extends State<HomePage> {
                         .map((comment) =>
                             Text(comment, style: TextStyle(fontSize: 14)))
                         .toList(),
+                    TextButton(
+                        onPressed: () => _addComment(document.id),
+                        child: Text("Add Comment")),
                   ],
                 ),
               ),
@@ -75,14 +79,118 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
+  void _showAddPostDialog() {
+    final _formKey = GlobalKey<FormState>();
+    String artist = '';
+    String songName = '';
 
-  final List<Widget> _pages = [
-    const HomePageContent(),
-    const ProfilePage(),
-    const SettingsPage(),
-  ];
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add New Post'),
+          content: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Artist'),
+                  onSaved: (value) => artist = value!,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Please enter an artist name' : null,
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Song Name'),
+                  onSaved: (value) => songName = value!,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Please enter a song name' : null,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text('Add Post'),
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+
+                  DocumentReference postRef =
+                      await FirebaseFirestore.instance.collection('posts').add({
+                    'artist': artist,
+                    'songName': songName,
+                    'comments': [],
+                    'linkedUser': globals.username,
+                  });
+
+                  DocumentSnapshot userDoc = await FirebaseFirestore.instance
+                      .collection('users')
+                      .where('username', isEqualTo: globals.username)
+                      .limit(1)
+                      .get()
+                      .then((snapshot) => snapshot.docs.first);
+
+                  FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(userDoc.id)
+                      .update({
+                    'fullHistory': FieldValue.arrayUnion([
+                      {'artist': artist, 'songName': songName}
+                    ])
+                  });
+
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _addComment(String postId) {
+    final TextEditingController _commentController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add a comment'),
+          content: TextField(
+            controller: _commentController,
+            decoration: InputDecoration(hintText: "Type your comment here"),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (_commentController.text.isNotEmpty) {
+                  await FirebaseFirestore.instance
+                      .collection('posts')
+                      .doc(postId)
+                      .update({
+                    'comments': FieldValue.arrayUnion([_commentController.text])
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Post Comment'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +198,11 @@ class _HomePageState extends State<HomePage> {
       body: IndexedStack(
         index: _currentIndex,
         children: _pages,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showAddPostDialog,
+        child: const Icon(Icons.add),
+        tooltip: 'Add Post',
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,

@@ -1,4 +1,4 @@
-// globals.dart
 library globals;
 
 String? currentUser;
+String? username;
