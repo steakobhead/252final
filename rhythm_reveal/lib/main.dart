@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:rhythm_reveal/firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rhythm_reveal/page_auth.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 
 
 void main() async {

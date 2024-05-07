@@ -1,9 +1,9 @@
 class Song {
-  final String title;
-  final String artist;
-  final String genre;
-  final int year;
-  final String album;
+   String title;
+   String artist;
+   String genre;
+   int year;
+   String album;
 
   Song({
     required this.title,
@@ -21,6 +21,36 @@ class Song {
       year: data['year'],
       album: data['album'],
     );
+  }
+
+  factory Song.fromMap(Map<String, dynamic> data) {
+    return Song(
+      title: data['title'],
+      artist: data['artist'],
+      album: data['album'],
+      genre: data['genre'],
+      year: data['year'],
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'artist': artist,
+      'album': album,
+      'genre': genre,
+      'year': year,
+    };
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'artist': artist,
+      'album': album,
+      'genre': genre,
+      'year': year,
+    };
   }
 }
 
